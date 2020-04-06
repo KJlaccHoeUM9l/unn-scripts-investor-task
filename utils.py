@@ -9,6 +9,6 @@ def parse(file_path):
         bonds = []
         for line in f:
             day, name, price, count = line.split()
-            bonds.append(Bond(int(day), str(name), float(price), int(count)))
+            bonds.append(Bond(int(day), str(name), int(float(price)), int(count)))
 
     return investor, bonds

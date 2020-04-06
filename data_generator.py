@@ -20,8 +20,8 @@ def generate_data(n_days, m_lots, s_money, file_path):
 
 
 def main():
-    file_path = os.path.join('test_files', 'random_data.txt')
-    generate_data(n_days=147, m_lots=47, s_money=1474747, file_path=file_path)
+    file_path = os.path.join('test_files', 'random_data_small.txt')
+    generate_data(n_days=27, m_lots=7, s_money=14747, file_path=file_path)
 
 
 if __name__ == '__main__':

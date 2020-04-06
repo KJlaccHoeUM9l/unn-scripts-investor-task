@@ -1,4 +1,5 @@
 from Investor import Investor
+from functools import lru_cache
 
 
 def dynamic_programing(investor, bonds):
@@ -40,3 +41,30 @@ def dynamic_programing(investor, bonds):
         investor.total_reward = _best_reword_matrix[count_papers][investor_money]
         for i in _answer_indexes:
             investor.bonds.append(bonds[i - 1])
+
+
+def dynamic_programming_recursive(investor, bonds):
+    @lru_cache(maxsize=None)
+    def best_value(num_elements, available_weight):
+        # Return the value of the most valuable subsequence of the first
+        # 'num_elements' elements in items whose weights sum to no more than 'available_weight'.
+        if available_weight < 0:
+            return float('-inf')
+        if num_elements == 0:
+            return 0
+
+        value = bonds[num_elements - 1].get_total_reward(investor.n_days)
+        weight = bonds[num_elements - 1].total_cost
+        return max(best_value(num_elements - 1, available_weight),
+                   best_value(num_elements - 1, available_weight - weight) + value)
+
+    max_weight = investor.s_money
+    j = max_weight
+    for i in reversed(range(len(bonds))):
+        if best_value(i + 1, j) != best_value(i, j):
+            investor.add_bond(bonds[i])
+            j -= bonds[i].total_cost
+    investor.bonds.reverse()
+
+    investor.total_reward = best_value(len(bonds), max_weight)
+    # print(best_value.cache_info())

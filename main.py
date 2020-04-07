@@ -10,5 +10,5 @@ if __name__ == '__main__':
     investor, bonds = parse_data.parse(test_file_path)
     optimization_algorithms.dynamic_programming_recursive(investor, bonds)
     print(investor.get_total_reward())
-    for bond in investor.bonds:
+    for bond in investor.get_profitable_bonds():
         print(bond)

@@ -4,18 +4,19 @@ class Investor:
         self.m_items = m_items
         self.s_money = s_money
 
-        self.bonds = []
-        self.total_reward = None
+        self.__bonds = []
+        self.__total_reward = None
 
     def add_bond(self, bond):
         if self.s_money - bond.get_total_cost() >= 0:
-            self.bonds.append(bond)
+            self.__bonds.append(bond)
             self.s_money -= bond.get_total_cost()
 
+    def set_total_reward(self, reward):
+        self.__total_reward = reward
+
+    def get_profitable_bonds(self):
+        return self.__bonds
+
     def get_total_reward(self):
-        if self.total_reward is not None:
-            return self.total_reward
-        total_reward = 0
-        for bond in self.bonds:
-            total_reward += bond.get_total_reward(self.n_days)
-        return total_reward
+        return self.__total_reward

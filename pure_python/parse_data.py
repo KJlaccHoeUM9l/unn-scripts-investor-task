@@ -1,5 +1,5 @@
-from Investor import Investor
-from Bond import Bond
+from pure_python.Investor import Investor
+from pure_python.Bond import Bond
 
 
 def parse(file_path):

@@ -8,9 +8,9 @@ class Investor:
         self.total_reward = None
 
     def add_bond(self, bond):
-        if self.s_money - bond.total_cost >= 0:
+        if self.s_money - bond.get_total_cost() >= 0:
             self.bonds.append(bond)
-            self.s_money -= bond.total_cost
+            self.s_money -= bond.get_total_cost()
 
     def get_total_reward(self):
         if self.total_reward is not None:

@@ -1,4 +1,7 @@
-class AbstractBond:
+from abc import ABC
+
+
+class AbstractBond(ABC):
     __slots__ = '_nominal', '_day', '_name', '_price', '_count', '_total_cost'
 
     def get_total_cost(self):

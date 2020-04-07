@@ -21,5 +21,5 @@ def dynamic_programming_recursive(investor, bonds):
             investor.add_bond(bonds[bond_number])
             available_money -= bonds[bond_number].get_total_cost()
 
-    investor.get_profitable_bonds().reverse()
+    investor.reverse_bonds()
     investor.set_total_reward(best_reward(len(bonds), max_money))

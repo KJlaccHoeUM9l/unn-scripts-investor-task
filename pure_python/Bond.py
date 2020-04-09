@@ -1,4 +1,4 @@
-from AbstractBond import AbstractBond
+from interfaces.AbstractBond import AbstractBond
 
 
 class Bond(AbstractBond):
@@ -9,4 +9,5 @@ class Bond(AbstractBond):
         self._count = count
 
         self._nominal = 1000
+        self._horizon = 30
         self._total_cost = int((self._price / 100.) * self._nominal * self._count)

@@ -1,9 +1,7 @@
-from IOptimizableInvestor import IOptimizableInvestor
+from interfaces.IOptimizableInvestor import IOptimizableInvestor
 
 
 class Investor(IOptimizableInvestor):
-    __slots__ = 'n_days', 'm_bonds', 's_money', '__bonds', '__total_reward'
-
     def __init__(self, n_days, m_bonds, s_money):
         self.n_days = n_days
         self.m_bonds = m_bonds

@@ -11,6 +11,6 @@ def parse(file_path):
         bonds = np.empty(0, dtype=NBond)
         for line in f:
             day, name, price, count = line.split()
-            bonds = np.append(bonds, NBond(np.int32(day), np.str(name), np.int32(float(price)), np.int32(count)))
+            bonds = np.append(bonds, NBond(np.int32(day), np.str(name), float(price), np.int32(count)))
 
     return investor, bonds

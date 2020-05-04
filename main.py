@@ -1,37 +1,65 @@
 import os
 import time
 
-from pure_python import parse_data
-from with_numpy_types import n_parse_data
 import optimization_algorithms
 
+from args import parse_args
+from mem_use_win32 import get_memory_usage
+from pure_python import parse_data
+from with_numpy_types import n_parse_data
+
+
+def main(output_path, investor, bonds, algorithm, use_cache=True):
+    elapsed_time = time.time()
+    try:
+        algorithm(investor, bonds, use_cache=use_cache)
+    except TypeError:
+        algorithm(investor, bonds)
+    elapsed_time = time.time() - elapsed_time
+
+    print('Elapsed time: {:.2f} ms'.format(elapsed_time * 1000))
+    print('Usage memory: {:.2f} MB'.format(get_memory_usage() / (1024. * 1024.)))
+
+    with open(output_path, 'w') as f:
+        f.write('{}\n'.format(investor.get_total_reward()))
+        for bond in bonds:
+            f.write('{}\n'.format(bond))
+    print('Results have been saved to {}'.format(output_path))
+
+
 if __name__ == '__main__':
-    # test_file_path = os.path.join('test_files', 'random_data_medium.txt')
-    test_file_path = os.path.join('test_files', 'random_data_small.txt')
+    __args = parse_args()
 
-    investor, bonds = parse_data.parse(test_file_path)
-    n_investor, n_bonds = n_parse_data.parse(test_file_path)
+    # Parse input path
+    __input_path = __args.i
+    if not os.path.isfile(__input_path):
+        raise ValueError('Input error, file "{}" doesn\'t exists.'.format(__input_path))
 
-    default_version = time.time()
-    optimization_algorithms.dynamic_programming_recursive(investor, bonds)
-    default_version = time.time() - default_version
+    # Parse output path
+    __output_path = __args.o
+    if not os.path.isdir(__output_path):
+        raise ValueError('Output error, directory "{}" doesn\'t exists.'.format(__output_path))
+    __output_path = os.path.join(__output_path, 'output.txt')
 
-    fast_version = time.time()
-    optimization_algorithms.dynamic_programming_recursive(n_investor, n_bonds)
-    fast_version = time.time() - fast_version
+    # Parse algorithm type
+    __algorithm_type = __args.a
+    if __algorithm_type == 'base':
+        __algorithm = optimization_algorithms.dynamic_programming
+        __use_cache = False
+    elif __algorithm_type == 'base_recursive':
+        __algorithm = optimization_algorithms.dynamic_programming_recursive
+        __use_cache = False
+    else:
+        __algorithm = optimization_algorithms.dynamic_programming_recursive
+        __use_cache = True
 
-    print('Default: {:.2f} ms\n'
-          'Fast: {:.2f} ms\n'
-          'Acceleration: {:.2f}'.format(default_version * 1000,
-                                        fast_version * 1000,
-                                        default_version / fast_version))
+    # Parse NumPy types mode
+    __use_numpy = __args.use_numpy_types
+    if __use_numpy == 0:
+        data_parser = parse_data
+    else:
+        data_parser = n_parse_data
 
-    print('************* Default **************')
-    print(investor.get_total_reward())
-    for bond in investor.get_profitable_bonds():
-        print(bond)
-
-    print('*********** Optimization ***********')
-    print(n_investor.get_total_reward())
-    for bond in n_investor.get_profitable_bonds():
-        print(bond)
+    # Run program
+    __investor, __bonds = data_parser.parse(__input_path)
+    main(__output_path, __investor, __bonds, __algorithm, __use_cache)

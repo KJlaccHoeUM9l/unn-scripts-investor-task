@@ -4,13 +4,11 @@ from interfaces.IOptimizableInvestor import IOptimizableInvestor
 from interfaces.AbstractBond import AbstractBond
 
 
+__all__ = ['dynamic_programming', 'dynamic_programming_recursive', 'ConditionalLruCache', 'check_input_types']
+
+
 def dynamic_programming(investor, bonds):
-    if not isinstance(investor, IOptimizableInvestor):
-        raise TypeError('Incorrect type, investor should implement IOptimizableInvestor interface')
-    if len(bonds) == 0:
-        raise ValueError('No bonds')
-    elif not isinstance(bonds[0], AbstractBond):
-        raise TypeError('Incorrect type, every bond should extend AbstractBond class')
+    check_input_types(investor, bonds)
 
     max_money = investor.s_money
     best_rewards = [[0] * (max_money + 1) for _ in range(len(bonds) + 1)]
@@ -37,15 +35,10 @@ def dynamic_programming(investor, bonds):
     investor.set_total_reward(best_rewards[len(bonds)][max_money])
 
 
-def dynamic_programming_recursive(investor, bonds):
-    if not isinstance(investor, IOptimizableInvestor):
-        raise TypeError('Incorrect type, investor should implement IOptimizableInvestor interface')
-    if len(bonds) == 0:
-        raise ValueError('No bonds')
-    elif not isinstance(bonds[0], AbstractBond):
-        raise TypeError('Incorrect type, every bond should extend AbstractBond class')
+def dynamic_programming_recursive(investor, bonds, use_cache=True):
+    check_input_types(investor, bonds)
 
-    @lru_cache(maxsize=None)
+    @ConditionalLruCache(use_cache=use_cache, max_size=None)
     def best_reward(num_elements_, available_money_):
         if available_money_ < 0:
             return float('-inf')
@@ -66,3 +59,28 @@ def dynamic_programming_recursive(investor, bonds):
 
     investor.reverse_bonds()
     investor.set_total_reward(best_reward(len(bonds), max_money))
+
+
+# ************************************************** Helpers ***********************************************************
+class ConditionalLruCache:
+    def __init__(self, use_cache=True, max_size=None):
+        self.use_cache = use_cache
+        self.max_size = max_size
+
+    def __call__(self, func):
+        if self.use_cache:
+            @lru_cache(maxsize=self.max_size)
+            def wrapper(*args, **kwargs):
+                return func(*args, **kwargs)
+            return wrapper
+        else:
+            return func
+
+
+def check_input_types(investor, bonds):
+    if not isinstance(investor, IOptimizableInvestor):
+        raise TypeError('Incorrect type, investor should implement IOptimizableInvestor interface')
+    if len(bonds) == 0:
+        raise ValueError('No bonds')
+    elif not isinstance(bonds[0], AbstractBond):
+        raise TypeError('Incorrect type, every bond should extend AbstractBond class')

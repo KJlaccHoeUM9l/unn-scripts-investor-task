@@ -4,7 +4,6 @@ import time
 import optimization_algorithms
 
 from args import parse_args
-from mem_use_win32 import get_memory_usage
 from pure_python import parse_data
 from with_numpy_types import n_parse_data
 
@@ -18,7 +17,6 @@ def main(output_path, investor, bonds, algorithm, use_cache=True):
     elapsed_time = time.time() - elapsed_time
 
     print('Elapsed time: {:.2f} ms'.format(elapsed_time * 1000))
-    print('Usage memory: {:.2f} MB'.format(get_memory_usage() / (1024. * 1024.)))
 
     with open(output_path, 'w') as f:
         f.write('{}\n'.format(investor.get_total_reward()))

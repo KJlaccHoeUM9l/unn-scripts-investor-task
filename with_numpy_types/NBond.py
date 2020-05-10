@@ -12,4 +12,6 @@ class NBond(AbstractBond):
 
         self._nominal = np.int32(1000)
         self._horizon = np.int32(30)
-        self._total_cost = np.int32((self._price / np.float32(100)) * self._nominal * self._count)
+
+        price_convert_coefficient = self._nominal / 100.
+        self._total_cost = np.int32(self._price * price_convert_coefficient * self._count)

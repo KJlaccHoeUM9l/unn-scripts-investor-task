@@ -22,7 +22,7 @@ def main(output_path, investor, bonds, algorithm, use_cache=True):
 
     with open(output_path, 'w') as f:
         f.write('{}\n'.format(investor.get_total_reward()))
-        for bond in bonds:
+        for bond in investor.get_profitable_bonds():
             f.write('{}\n'.format(bond))
     print('Results have been saved to {}'.format(output_path))
 

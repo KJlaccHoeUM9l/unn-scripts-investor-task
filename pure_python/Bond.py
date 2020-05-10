@@ -10,4 +10,6 @@ class Bond(AbstractBond):
 
         self._nominal = 1000
         self._horizon = 30
-        self._total_cost = int((self._price / 100.) * self._nominal * self._count)
+
+        price_convert_coefficient = self._nominal / 100.
+        self._total_cost = int(self._price * price_convert_coefficient * self._count)
